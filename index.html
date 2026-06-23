@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Perangkat Ajar - Deep Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Gaya khusus untuk dokumen cetak agar mirip persis dengan gambar referensi */
+        #print-area {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            color: #000;
+            background: #fff;
+        }
+        
+        .doc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+            font-size: 11pt;
+        }
+        
+        .doc-table th, .doc-table td {
+            border: 1px solid #111;
+            padding: 8px 10px;
+            vertical-align: top;
+            text-align: left;
+        }
+        
+        .doc-table th {
+            background-color: #f3f4f6;
+            font-weight: bold;
+        }
+
+        .section-header-bar {
+            font-weight: bold;
+            font-size: 12pt;
+            background-color: #e5e7eb;
+            padding: 6px 10px;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #000;
+            text-transform: uppercase;
+        }
+
+        .highlight-box {
+            background-color: #f1fbe9;
+            border: 1px solid #a3e635;
+            padding: 10px;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        .text-justify {
+            text-align: justify;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Simulator tampilan kertas A4 */
+        .paper-shadow {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen flex flex-col">
+
+    <!-- TOP BAR -->
+    <header class="bg-blue-700 text-white shadow-md py-4 px-6 flex justify-between items-center border-b border-blue-800">
+        <div class="flex items-center gap-3">
+            <div class="bg-white p-2 rounded-lg text-blue-700">
+                <i class="fas fa-brain text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight">Generator Perangkat Ajar</h1>
+                <p class="text-xs text-blue-100">Generator by Krisna antara</p>
+            </div>
+        </div>
+        <button onclick="resetForm()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold py-2 px-4 rounded-md shadow transition flex items-center gap-2">
+            <i class="fas fa-redo-alt"></i> Buat Baru
+        </button>
+    </header>
+
+    <!-- MAIN WRAPPER -->
+    <div class="flex-grow grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden">
+        
+        <!-- LEFT PANEL: INPUT FORM -->
+        <div class="lg:col-span-5 bg-slate-800 p-6 overflow-y-auto max-h-[calc(100vh-73px)] custom-scrollbar border-r border-slate-700">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-lg font-semibold text-white flex items-center gap-2">
+                    <i class="fas fa-sliders-h text-blue-400"></i> Konfigurasi Modul
+                </h2>
+                <button type="button" onclick="fillDummyData()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold py-2 px-3 rounded-md shadow-sm transition flex items-center gap-1.5">
+                    <i class="fas fa-bolt text-sm"></i> Isi Contoh
+                </button>
+            </div>
+
+            <form id="rpmForm" class="space-y-6">
+                
+                <!-- HIDDEN INPUTS (Menghilangkan CP, Makna, dan Lintas Disiplin dari UI tapi tetap ada nilainya) -->
+                <input type="hidden" id="cp" value="Siswa mampu memahami dan menganalisis materi secara komprehensif sesuai dengan capaian pembelajaran fase terkait.">
+                <input type="hidden" id="makna" value="Proses pembelajaran ini akan memberikan pengalaman nyata dan bermakna yang dapat diterapkan oleh siswa dalam kehidupan sehari-hari.">
+                <input type="hidden" id="lintasDisiplin" value="Terintegrasi dengan berbagai disiplin ilmu yang relevan dengan konteks materi yang diajarkan.">
+
+                <!-- IDENTITAS GURU -->
+                <div class="bg-slate-750/50 p-4 rounded-lg border border-slate-700/50 space-y-4">
+                    <div class="flex items-center gap-2 text-blue-400 font-semibold text-sm border-b border-slate-700 pb-2">
+                        <i class="fas fa-id-card"></i> IDENTITAS GURU
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300">Nama Guru</label>
+                            <input type="text" id="guru" required class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300">NIP Guru</label>
+                            <input type="text" id="nipGuru" class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5" placeholder="-">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300">Nama Kepala Sekolah</label>
+                            <input type="text" id="kepsek" required class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300">NIP Kepala Sekolah</label>
+                            <input type="text" id="nipKepsek" class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5" placeholder="-">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-medium text-slate-300">Nama Sekolah</label>
+                            <input type="text" id="sekolah" required class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INFORMASI AKADEMIK -->
+                <div class="bg-slate-750/50 p-4 rounded-lg border border-slate-700/50 space-y-4">
+                    <div class="flex items-center gap-2 text-blue-400 font-semibold text-sm border-b border-slate-700 pb-2">
+                        <i class="fas fa-graduation-cap"></i> INFORMASI AKADEMIK
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-xs font-medium text-slate-300">Mata Pelajaran</label>
+                            <input type="text" id="mapel" required class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300">Jenjang</label>
+                            <input type="text" id="jenjang" required class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300">Fase</label>
+                            <input type="text" id="fase" required class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300">Kelas</label>
+                            <input type="text" id="kelas" required class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300">Semester</label>
+                            <input type="text" id="semester" required class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300">Tahun Pelajaran</label>
+                            <input type="text" id="tapel" required class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5" value="2025/2026">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300">Alokasi Waktu</label>
+                            <input type="text" id="alokasi" required class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MATERI -->
+                <div class="bg-slate-750/50 p-4 rounded-lg border border-slate-700/50 space-y-4">
+                    <div class="flex items-center gap-2 text-blue-400 font-semibold text-sm border-b border-slate-700 pb-2">
+                        <i class="fas fa-book-open"></i> MATERI & TUJUAN
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300">Topik Materi</label>
+                        <input type="text" id="topik" required class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300">Tujuan Pembelajaran</label>
+                        <textarea id="tp" required rows="3" class="mt-1 block w-full rounded-md bg-slate-700 border-slate-600 text-white placeholder-slate-400 focus:ring-blue-500 focus:border-blue-500 sm:text-sm p-2.5"></textarea>
+                    </div>
+                </div>
+
+                <!-- PROFIL LULUSAN -->
+                <div class="bg-slate-750/50 p-4 rounded-lg border border-slate-700/50 space-y-4">
+                    <div class="flex items-center gap-2 text-blue-400 font-semibold text-sm border-b border-slate-700 pb-2">
+                        <i class="fas fa-users-cog"></i> PROFIL LULUSAN (P3)
+                    </div>
+                    <div class="grid grid-cols-1 gap-2 text-xs text-slate-300">
+                        <label class="flex items-center gap-2.5 p-1 hover:bg-slate-700 rounded transition cursor-pointer">
+                            <input type="checkbox" name="profil" value="Keimanan dan ketaqwaan terhadap Tuhan YME" class="rounded bg-slate-600 border-slate-500 text-blue-600">
+                            Keimanan dan ketaqwaan terhadap Tuhan YME
+                        </label>
+                        <label class="flex items-center gap-2.5 p-1 hover:bg-slate-700 rounded transition cursor-pointer">
+                            <input type="checkbox" name="profil" value="Penalaran Kritis" class="rounded bg-slate-600 border-slate-500 text-blue-600">
+                            Penalaran Kritis
+                        </label>
+                        <label class="flex items-center gap-2.5 p-1 hover:bg-slate-700 rounded transition cursor-pointer">
+                            <input type="checkbox" name="profil" value="Kolaborasi" class="rounded bg-slate-600 border-slate-500 text-blue-600">
+                            Kolaborasi
+                        </label>
+                        <label class="flex items-center gap-2.5 p-1 hover:bg-slate-700 rounded transition cursor-pointer">
+                            <input type="checkbox" name="profil" value="Kewargaan" class="rounded bg-slate-600 border-slate-500 text-blue-600">
+                            Kewargaan
+                        </label>
+                        <label class="flex items-center gap-2.5 p-1 hover:bg-slate-700 rounded transition cursor-pointer">
+                            <input type="checkbox" name="profil" value="Kreativitas" class="rounded bg-slate-600 border-slate-500 text-blue-600">
+                            Kreativitas
+                        </label>
+                        <label class="flex items-center gap-2.5 p-1 hover:bg-slate-700 rounded transition cursor-pointer">
+                            <input type="checkbox" name="profil" value="Kemandirian" class="rounded bg-slate-600 border-slate-500 text-blue-600">
+                            Kemandirian
+                        </label>
+                        <label class="flex items-center gap-2.5 p-1 hover:bg-slate-700 rounded transition cursor-pointer">
+                            <input type="checkbox" name="profil" value="Komunikasi" class="rounded bg-slate-600 border-slate-500 text-blue-600">
+                            Komunikasi
+                        </label>
+                        <label class="flex items-center gap-2.5 p-1 hover:bg-slate-700 rounded transition cursor-pointer">
+                            <input type="checkbox" name="profil" value="Kesehatan" class="rounded bg-slate-600 border-slate-500 text-blue-600">
+                            Kesehatan
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SARANA PRASARANA -->
+                <div class="bg-slate-750/50 p-4 rounded-lg border border-slate-700/50 space-y-4">
+                    <div class="flex items-center gap-2 text-blue-400 font-semibold text-sm border-b border-slate-700 pb-2">
+                        <i class="fas fa-tools"></i> SARANA PRASARANA
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-300">
+                        <label class="flex items-center gap-2"><input type="checkbox" name="sarpras" value="LCD" class="rounded bg-slate-600 text-blue-600"> LCD</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="sarpras" value="Laptop" class="rounded bg-slate-600 text-blue-600"> Laptop</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="sarpras" value="Internet" class="rounded bg-slate-600 text-blue-600"> Internet</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="sarpras" value="Buku Teks" class="rounded bg-slate-600 text-blue-600"> Buku Teks</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="sarpras" value="Youtube" class="rounded bg-slate-600 text-blue-600"> Youtube</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="sarpras" value="Canva" class="rounded bg-slate-600 text-blue-600"> Canva</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="sarpras" value="Quizizz" class="rounded bg-slate-600 text-blue-600"> Quizizz</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="sarpras" value="Wordwall" class="rounded bg-slate-600 text-blue-600"> Wordwall</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="sarpras" value="LKPD" class="rounded bg-slate-600 text-blue-600"> LKPD</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="sarpras" value="Whiteboard" class="rounded bg-slate-600 text-blue-600"> Whiteboard</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="sarpras" value="Google Classroom" class="rounded bg-slate-600 text-blue-600"> Google Classroom</label>
+                    </div>
+                </div>
+
+                <!-- TARGET PESERTA DIDIK -->
+                <div class="bg-slate-750/50 p-4 rounded-lg border border-slate-700/50 space-y-4">
+                    <div class="flex items-center gap-2 text-blue-400 font-semibold text-sm border-b border-slate-700 pb-2">
+                        <i class="fas fa-bullseye"></i> TARGET PESERTA DIDIK
+                    </div>
+                    <div class="grid grid-cols-1 gap-2 text-xs text-slate-300">
+                        <label class="flex items-center gap-2"><input type="checkbox" name="target" value="Reguler" class="rounded bg-slate-600 text-blue-600"> Reguler</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="target" value="Kesulitan Belajar" class="rounded bg-slate-600 text-blue-600"> Kesulitan Belajar</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="target" value="Pencapaian Tinggi" class="rounded bg-slate-600 text-blue-600"> Pencapaian Tinggi</label>
+                    </div>
+                </div>
+
+                <!-- MODEL PEMBELAJARAN -->
+                <div class="bg-slate-750/50 p-4 rounded-lg border border-slate-700/50 space-y-4">
+                    <div class="flex items-center gap-2 text-blue-400 font-semibold text-sm border-b border-slate-700 pb-2">
+                        <i class="fas fa-shapes"></i> MODEL PEMBELAJARAN
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-300">
+                        <label class="flex items-center gap-2"><input type="checkbox" name="model" value="Inquiry" class="rounded bg-slate-600 text-blue-600"> Inquiry</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="model" value="Discovery Learning" class="rounded bg-slate-600 text-blue-600"> Discovery Learning</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="model" value="Problem Based Learning (PBL)" class="rounded bg-slate-600 text-blue-600"> PBL</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="model" value="Project Based Learning (PjBL)" class="rounded bg-slate-600 text-blue-600"> PjBL</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="model" value="Cooperative Learning" class="rounded bg-slate-600 text-blue-600"> Cooperative Learning</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="model" value="Contextual Teaching Learning (CTL)" class="rounded bg-slate-600 text-blue-600"> CTL</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="model" value="Game Based Learning" class="rounded bg-slate-600 text-blue-600"> Game Based Learning</label>
+                    </div>
+                </div>
+
+                <!-- METODE PEMBELAJARAN -->
+                <div class="bg-slate-750/50 p-4 rounded-lg border border-slate-700/50 space-y-4">
+                    <div class="flex items-center gap-2 text-blue-400 font-semibold text-sm border-b border-slate-700 pb-2">
+                        <i class="fas fa-comments"></i> METODE PEMBELAJARAN
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-xs text-slate-300">
+                        <label class="flex items-center gap-2"><input type="checkbox" name="metode" value="Ceramah" class="rounded bg-slate-600 text-blue-600"> Ceramah</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="metode" value="Diskusi" class="rounded bg-slate-600 text-blue-600"> Diskusi</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="metode" value="Tanya Jawab" class="rounded bg-slate-600 text-blue-600"> Tanya Jawab</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="metode" value="Demonstrasi" class="rounded bg-slate-600 text-blue-600"> Demonstrasi</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="metode" value="Eksperimen" class="rounded bg-slate-600 text-blue-600"> Eksperimen</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="metode" value="Role Play" class="rounded bg-slate-600 text-blue-600"> Role Play</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="metode" value="Studi Kasus" class="rounded bg-slate-600 text-blue-600"> Studi Kasus</label>
+                        <label class="flex items-center gap-2"><input type="checkbox" name="metode" value="Mind Mapping" class="rounded bg-slate-600 text-blue-600"> Mind Mapping</label>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition-all flex items-center justify-center gap-2 text-sm mt-4 tracking-wide">
+                    <i class="fas fa-magic"></i> GENERATE PERANGKAT AJAR
+                </button>
+            </form>
+        </div>
+
+        <!-- RIGHT PANEL: PREVIEW & EXPORT -->
+        <div class="lg:col-span-7 flex flex-col max-h-[calc(100vh-73px)]">
+            
+            <!-- EXPORT ACTION PANEL -->
+            <div id="actionBar" class="bg-slate-800 p-4 border-b border-slate-700 flex flex-wrap gap-3 items-center justify-between opacity-50 pointer-events-none transition-opacity duration-300">
+                <!-- Navigasi Cepat Modul -->
+                <div class="flex flex-wrap gap-1.5 text-xs">
+                    <button onclick="scrollToSec('sec-identitas')" class="bg-blue-900/40 text-blue-300 border border-blue-800 hover:bg-blue-800/60 px-2.5 py-1.5 rounded-md font-medium"><i class="fas fa-check-circle text-emerald-400 mr-1"></i>Modul</button>
+                    <button onclick="scrollToSec('sec-lkpd')" class="bg-blue-900/40 text-blue-300 border border-blue-800 hover:bg-blue-800/60 px-2.5 py-1.5 rounded-md font-medium"><i class="fas fa-check-circle text-purple-400 mr-1"></i>LKPD</button>
+                    <button onclick="scrollToSec('sec-asesmen')" class="bg-blue-900/40 text-blue-300 border border-blue-800 hover:bg-blue-800/60 px-2.5 py-1.5 rounded-md font-medium"><i class="fas fa-check-circle text-pink-400 mr-1"></i>Asesmen</button>
+                    <button onclick="scrollToSec('sec-bacaan')" class="bg-blue-900/40 text-blue-300 border border-blue-800 hover:bg-blue-800/60 px-2.5 py-1.5 rounded-md font-medium"><i class="fas fa-check-circle text-amber-400 mr-1"></i>Bacaan</button>
+                    <button onclick="scrollToSec('sec-tindaklanjut')" class="bg-blue-900/40 text-blue-300 border border-blue-800 hover:bg-blue-800/60 px-2.5 py-1.5 rounded-md font-medium"><i class="fas fa-check-circle text-cyan-400 mr-1"></i>Tindak Lanjut</button>
+                </div>
+                
+                <div class="flex gap-2.5 ml-auto">
+                    <button onclick="copyToClipboardAndOpenDocs()" class="bg-slate-100 hover:bg-white text-slate-900 px-4 py-2 rounded-md text-xs font-bold shadow transition flex items-center gap-1.5">
+                        <i class="fas fa-copy text-lg"></i> Copy Word
+                    </button>
+                    <button onclick="exportToWord()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md text-xs font-bold shadow transition flex items-center gap-1.5">
+                        <i class="fas fa-download text-lg"></i> Export (.doc)
+                    </button>
+                </div>
+            </div>
+
+            <!-- DOCUMENT VIEWER -->
+            <div class="flex-grow bg-slate-900 overflow-y-auto p-4 sm:p-8 custom-scrollbar flex justify-center">
+                <div id="print-area" class="paper-shadow w-full max-w-[21cm] min-h-[29.7cm] p-[1.5cm] sm:p-[2cm] text-slate-900 bg-white rounded-md transition-all self-start">
+                    
+                    <!-- INITIAL STATE -->
+                    <div class="h-[60vh] flex flex-col items-center justify-center text-slate-400 space-y-4 text-center">
+                        <i class="fas fa-file-invoice text-7xl text-slate-300"></i>
+                        <div>
+                            <p class="font-semibold text-lg text-slate-500">Pratinjau Dokumen Kosong</p>
+                            <p class="text-sm max-w-sm mt-1">Silakan isi formulir atau gunakan fitur tombol instan "Isi Contoh" lalu jalankan generate.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MAIN JAVASCRIPT -->
+    <script>
+        document.getElementById('rpmForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            generateDocument();
+        });
+
+        function getCheckedValues(name) {
+            return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+        }
+
+        function checkCheckboxes(name, values) {
+            document.querySelectorAll(`input[name="${name}"]`).forEach(el => el.checked = false);
+            values.forEach(val => {
+                const el = document.querySelector(`input[name="${name}"][value="${val}"]`);
+                if(el) el.checked = true;
+            });
+        }
+
+        // Fill Dummy Data
+        function fillDummyData() {
+            document.getElementById('guru').value = 'Waha Rny, S.Pd, Gr';
+            document.getElementById('nipGuru').value = '19930812 201802 2 004';
+            document.getElementById('kepsek').value = 'Ridwan, M.Pd';
+            document.getElementById('nipKepsek').value = '19750510 200003 1 002';
+            document.getElementById('sekolah').value = 'SD Makmur';
+
+            document.getElementById('mapel').value = 'IPA';
+            document.getElementById('jenjang').value = 'SD';
+            document.getElementById('fase').value = 'Fase C';
+            document.getElementById('kelas').value = '5';
+            document.getElementById('semester').value = '2 (Genap)';
+            document.getElementById('tapel').value = '2025/2026';
+            document.getElementById('alokasi').value = '70 menit';
+
+            document.getElementById('topik').value = 'Siklus Air';
+            
+            // Mengisi input hidden
+            document.getElementById('cp').value = 'Siswa mampu menganalisis siklus air dan hubungan dengan peristiwa di bumi serta kelangsungan makhluk hidup.';
+            document.getElementById('makna').value = '"Siklus air (penguapan, pengembunan, dan hujan) adalah mekanisme alami bumi yang memastikan ketersediaan air bersih secara berkelanjutan. Memahami proses ini membantu kita menghargai pentingnya panas matahari dan memotivasi upaya konservasi air."';
+            document.getElementById('lintasDisiplin').value = 'Fisika (Konsep Energi Panas), Geografi (Kondisi Iklim dan Cuaca)';
+            
+            // Tujuan Pembelajaran tetap terlihat
+            document.getElementById('tp').value = '1. Siswa dapat menjelaskan proses penguapan, pengembunan, dan hujan dengan benar.\n2. Siswa mampu memahami bahwa panas matahari adalah penggerak utama siklus air di bumi.';
+
+            checkCheckboxes('profil', [
+                'Keimanan dan ketaqwaan terhadap Tuhan YME',
+                'Penalaran Kritis',
+                'Kolaborasi',
+                'Kewargaan',
+                'Kreativitas',
+                'Kemandirian',
+                'Komunikasi'
+            ]);
+            checkCheckboxes('sarpras', ['LCD', 'Laptop', 'Internet', 'LKPD', 'Canva', 'Whiteboard']);
+            checkCheckboxes('target', ['Reguler']);
+            checkCheckboxes('model', ['Problem Based Learning (PBL)']);
+            checkCheckboxes('metode', ['Diskusi', 'Tanya Jawab', 'Demonstrasi']);
+            
+            generateDocument();
+        }
+
+        function resetForm() {
+            document.getElementById('rpmForm').reset();
+            
+            // Kembalikan nilai hidden ke default
+            document.getElementById('cp').value = 'Siswa mampu memahami dan menganalisis materi secara komprehensif sesuai dengan capaian pembelajaran fase terkait.';
+            document.getElementById('makna').value = 'Proses pembelajaran ini akan memberikan pengalaman nyata dan bermakna yang dapat diterapkan oleh siswa dalam kehidupan sehari-hari.';
+            document.getElementById('lintasDisiplin').value = 'Terintegrasi dengan berbagai disiplin ilmu yang relevan dengan konteks materi yang diajarkan.';
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = false);
+            document.getElementById('print-area').innerHTML = `
+                <div class="h-[60vh] flex flex-col items-center justify-center text-slate-400 space-y-4 text-center">
+                    <i class="fas fa-file-invoice text-7xl text-slate-300"></i>
+                    <div>
+                        <p class="font-semibold text-lg text-slate-500">Pratinjau Dokumen Kosong</p>
+                        <p class="text-sm max-w-sm mt-1">Silakan isi formulir atau gunakan fitur tombol instan "Isi Contoh" lalu jalankan generate.</p>
+                    </div>
+                </div>`;
+            document.getElementById('actionBar').classList.add('opacity-50', 'pointer-events-none');
+        }
+
+        function scrollToSec(id) {
+            const el = document.getElementById(id);
+            if(el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function generateDocument() {
+            // Get inputs
+            const guru = document.getElementById('guru').value;
+            const nipGuru = document.getElementById('nipGuru').value || "-";
+            const kepsek = document.getElementById('kepsek').value;
+            const nipKepsek = document.getElementById('nipKepsek').value || "-";
+            const sekolah = document.getElementById('sekolah').value;
+
+            const mapel = document.getElementById('mapel').value;
+            const jenjang = document.getElementById('jenjang').value;
+            const fase = document.getElementById('fase').value;
+            const kelas = document.getElementById('kelas').value;
+            const semester = document.getElementById('semester').value;
+            const tapel = document.getElementById('tapel').value;
+            const alokasi = document.getElementById('alokasi').value;
+
+            const topik = document.getElementById('topik').value;
+            
+            // Ambil dari input tersembunyi (hidden)
+            const cp = document.getElementById('cp').value;
+            const makna = document.getElementById('makna').value;
+            const lintasDisiplin = document.getElementById('lintasDisiplin').value;
+            
+            const tp = document.getElementById('tp').value.split('\n').filter(line => line.trim() !== '');
+
+            const profil = getCheckedValues('profil');
+            const sarpras = getCheckedValues('sarpras');
+            const target = getCheckedValues('target');
+            const model = getCheckedValues('model');
+            const metode = getCheckedValues('metode');
+
+            // Format List helper
+            const formatList = (arr) => arr.length > 0 ? arr.map(item => `<li>${item}</li>`).join('') : '<li>-</li>';
+            const formatBullet = (arr) => arr.length > 0 ? arr.map(item => `${item}`).join(', ') : '-';
+
+            // Generate content
+            const html = `
+                <!-- IDENTITAS MODUL -->
+                <div id="sec-identitas" class="doc-title" style="text-align: center; font-size: 16pt; font-weight: bold; margin-bottom: 6px; text-transform: uppercase;">MODUL AJAR ${mapel.toUpperCase()}</div>
+                <div class="doc-subtitle" style="text-align: center; font-size: 12pt; font-style: italic; margin-bottom: 18pt; border-bottom: 2px solid #000; padding-bottom: 8px;">Pendekatan Pembelajaran Mendalam (Deep Learning)</div>
+
+                <div class="section-header-bar">I. IDENTITAS UMUM</div>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 1rem; font-size: 11pt; border: 1px solid #cbd5e1;">
+                    <tr>
+                        <th style="width: 30%; background-color: #f0f4f8; font-weight: bold; border: 1px solid #cbd5e1; padding: 10px; text-align: left;">Nama Penyusun</th>
+                        <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: left;">${guru} (NIP: ${nipGuru})</td>
+                    </tr>
+                    <tr>
+                        <th style="background-color: #f0f4f8; font-weight: bold; border: 1px solid #cbd5e1; padding: 10px; text-align: left;">Nama Sekolah</th>
+                        <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: left;">${sekolah}</td>
+                    </tr>
+                    <tr>
+                        <th style="background-color: #f0f4f8; font-weight: bold; border: 1px solid #cbd5e1; padding: 10px; text-align: left;">Jenjang / Kelas / Fase</th>
+                        <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: left;">${jenjang} / ${kelas} / ${fase}</td>
+                    </tr>
+                    <tr>
+                        <th style="background-color: #f0f4f8; font-weight: bold; border: 1px solid #cbd5e1; padding: 10px; text-align: left;">Mata Pelajaran</th>
+                        <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: left;">${mapel}</td>
+                    </tr>
+                    <tr>
+                        <th style="background-color: #f0f4f8; font-weight: bold; border: 1px solid #cbd5e1; padding: 10px; text-align: left;">Semester / Durasi</th>
+                        <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: left;">${semester} / ${alokasi}</td>
+                    </tr>
+                </table>
+
+                <table class="doc-table">
+                    <tr>
+                        <th style="width: 30%">Profil Lulusan (P3)</th>
+                        <td>
+                            <ul style="margin:0; padding-left:20px;">
+                                ${formatList(profil)}
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- DESAIN PEMBELAJARAN -->
+                <div class="section-header-bar">II. DESAIN PEMBELAJARAN</div>
+                <table class="doc-table">
+                    <tr>
+                        <th style="width: 30%">Capaian Pemb.</th>
+                        <td>${cp}</td>
+                    </tr>
+                    <tr>
+                        <th>Tujuan Pemb.</th>
+                        <td>
+                            <ul style="margin:0; padding-left:20px;">
+                                ${tp.map(t => `<li>${t}</li>`).join('')}
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Pemahaman Bermakna</th>
+                        <td>
+                            <div class="highlight-box" style="margin:0; background-color: #f1fbe9; border: 1px solid #a3e635; padding: 10px;">
+                                ${makna}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Lintas Disiplin Ilmu</th>
+                        <td>${lintasDisiplin}</td>
+                    </tr>
+                    <tr>
+                        <th>Topik</th>
+                        <td>${topik}</td>
+                    </tr>
+                    <tr>
+                        <th>Pedagogis</th>
+                        <td>
+                            <strong>Model:</strong> ${formatBullet(model)}<br>
+                            <strong>Metode:</strong> ${formatBullet(metode)}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Lingkungan & Digital</th>
+                        <td>
+                            <strong>Lingkungan:</strong> Ruang Fisik / Kelas<br>
+                            <strong>Digital:</strong> ${formatBullet(sarpras)}
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- LANGKAH-LANGKAH -->
+                <div class="section-header-bar">III. LANGKAH-LANGKAH PEMBELAJARAN</div>
+                <table class="doc-table">
+                    <tr style="background:#e5e7eb;">
+                        <th style="width: 15%; text-align:center;">TAHAP</th>
+                        <th style="width: 70%; text-align:center;">KEGIATAN & PRINSIP</th>
+                        <th style="width: 15%; text-align:center;">DURASI</th>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold; text-align:center;">Pendahuluan</td>
+                        <td>
+                            <strong>Orientasi dan Motivasi:</strong><br>
+                            1. Guru menyambut siswa, memeriksa kehadiran, dan mengajak siswa melakukan 'Ice Breaking' sederhana terkait materi.<br>
+                            2. <strong>Apersepsi:</strong> Guru mengajukan pertanyaan pemantik awal untuk menggali pemahaman siswa.<br>
+                            3. <strong>Penyajian Masalah:</strong> Guru memaparkan masalah kontekstual yang relevan dengan topik ${topik} dan menyampaikan tujuan pembelajaran.<br>
+                            <span style="color:#059669; font-size:10pt; font-weight:bold;">★ Prinsip: Menggembirakan</span>
+                        </td>
+                        <td style="text-align:center; font-weight:bold;">10 menit</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold; text-align:center;">Inti<br><small>(${formatBullet(model)})</small></td>
+                        <td>
+                            <strong>Eksplorasi dan Penyelidikan:</strong><br>
+                            1. Guru membagi siswa menjadi kelompok kecil yang kolaboratif.<br>
+                            2. Guru membagikan LKPD yang menuntun mereka melakukan penyelidikan terkait topik ${topik}.<br>
+                            3. Siswa berdiskusi, bereksperimen, atau melakukan studi literatur sesuai instruksi. Guru berkeliling memberikan bimbingan.<br>
+                            <span style="color:#059669; font-size:10pt; font-weight:bold;">★ Prinsip: Bermakna</span>
+                        </td>
+                        <td style="text-align:center; font-weight:bold;">35 menit</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold; text-align:center;">Inti Lanjutan</td>
+                        <td>
+                            <strong>Penyajian Hasil dan Evaluasi:</strong><br>
+                            1. Setiap kelompok merumuskan jawaban atau model penjelasan sederhana mengenai masalah yang diangkat.<br>
+                            2. Presentasi Kelompok: Siswa mempresentasikan temuan mereka di depan kelas.<br>
+                            3. Guru memimpin diskusi kelas untuk menarik kesimpulan dan memberikan penguatan konsep secara mendalam.<br>
+                            <span style="color:#059669; font-size:10pt; font-weight:bold;">★ Prinsip: Bermakna</span>
+                        </td>
+                        <td style="text-align:center; font-weight:bold;">20 menit</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold; text-align:center;">Penutup</td>
+                        <td>
+                            <strong>Refleksi dan Tindak Lanjut:</strong><br>
+                            1. <strong>Refleksi Individu:</strong> Siswa menyampaikan secara singkat apa yang mereka pelajari (kesimpulan pembelajaran).<br>
+                            2. Guru memberikan umpan balik positif atas partisipasi dan ketepatan jawaban siswa selama kegiatan.<br>
+                            3. <strong>Tindak Lanjut:</strong> Guru memberikan penugasan ringan untuk memperdalam materi.<br>
+                            4. Penutup dan salam.<br>
+                            <span style="color:#059669; font-size:10pt; font-weight:bold;">★ Prinsip: Berkesadaran</span>
+                        </td>
+                        <td style="text-align:center; font-weight:bold;">10 menit</td>
+                    </tr>
+                </table>
+
+                <!-- TANDA TANGAN -->
+                <table style="width: 100%; border: none; text-align: center; margin-top: 2rem; margin-bottom: 2rem;">
+                    <tr>
+                        <td style="width: 50%; border: none; padding-top: 20px;">
+                            Mengetahui,<br>
+                            Kepala Sekolah<br>
+                            <br><br><br><br>
+                            <strong><u>(${kepsek})</u></strong><br>
+                            NIP. ${nipKepsek}
+                        </td>
+                        <td style="width: 50%; border: none; padding-top: 20px;">
+                            Guru Mata Pelajaran<br>
+                            <br><br><br><br>
+                            <strong><u>(${guru})</u></strong><br>
+                            NIP. ${nipGuru}
+                        </td>
+                    </tr>
+                </table>
+
+                <div style="page-break-before: always;"></div>
+
+                <!-- LKPD SECTION (RAPID DALAM TABEL) -->
+                <div id="sec-lkpd" style="border: 2px solid #000; padding: 12px; text-align: center; font-weight: bold; font-size: 13pt; margin-top:20px; text-transform:uppercase; margin-bottom: 15px;">
+                    LEMBAR KERJA PESERTA DIDIK (LKPD)<br>
+                    ${mapel} - KELAS ${kelas}
+                </div>
+                
+                <table class="doc-table" style="margin-bottom: 15px;">
+                    <tr>
+                        <th style="width: 25%">Kelompok</th>
+                        <td>.........................................................</td>
+                    </tr>
+                    <tr>
+                        <th>Nama Anggota</th>
+                        <td>
+                            1. .........................................................<br>
+                            2. .........................................................<br>
+                            3. .........................................................
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="doc-table">
+                    <tr>
+                        <th style="background:#e5e7eb; text-align:left;">A. Petunjuk Belajar</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <ul style="margin-top:0; margin-bottom:0; padding-left:20px;">
+                                <li>Bekerjalah dalam kelompok diskusi yang telah ditentukan (4-5 orang).</li>
+                                <li>Pahami masalah terkait topik materi <strong>${topik}</strong>.</li>
+                                <li>Pastikan setiap anggota kelompok berpartisipasi aktif dalam diskusi dan merumuskan kesimpulan observasi.</li>
+                                <li>Gunakan sumber belajar yang tersedia untuk mencari informasi tambahan.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="doc-table">
+                    <tr>
+                        <th style="background:#e5e7eb; text-align:left;">B. Langkah Kerja & Penyelidikan</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 15px;">
+                            <p style="margin-top:0; font-weight:bold;">1. Identifikasi Masalah Utama</p>
+                            <p>Tuliskan permasalahan utama yang kalian temukan terkait topik yang sedang dibahas hari ini!</p>
+                            <div style="border: 1px solid #000; height: 60px; padding: 5px; font-size:10pt; color:#666; margin-bottom: 15px;">Jawaban Kelompok:</div>
+                            
+                            <p style="font-weight:bold;">2. Tabel Hasil Pengamatan / Diskusi</p>
+                            <p>Berdasarkan aktivitas yang kalian lakukan, catat hasil pengamatan kalian pada tabel berikut:</p>
+                            <table class="doc-table" style="margin-bottom:15px;">
+                                <tr>
+                                    <th style="width: 40%">Tahap / Objek Pengamatan</th>
+                                    <th>Hasil Observasi / Penjelasan Singkat</th>
+                                </tr>
+                                <tr>
+                                    <td>A. ........................................</td>
+                                    <td style="height:40px;"></td>
+                                </tr>
+                                <tr>
+                                    <td>B. ........................................</td>
+                                    <td style="height:40px;"></td>
+                                </tr>
+                                <tr>
+                                    <td>C. ........................................</td>
+                                    <td style="height:40px;"></td>
+                                </tr>
+                            </table>
+
+                            <p style="font-weight:bold;">3. Analisis dan Kesimpulan Konsep</p>
+                            <p>Jelaskan secara ringkas menggunakan kata-kata kelompok kalian sendiri kesimpulan penting dari pembelajaran ini.</p>
+                            <table class="doc-table" style="margin-bottom:0;">
+                                <tr>
+                                    <th style="width: 30%">Konsep / Istilah Kunci</th>
+                                    <th>Definisi atau Kesimpulan Kelompok</th>
+                                </tr>
+                                <tr>
+                                    <td>1. ..............................</td>
+                                    <td style="height:50px;"></td>
+                                </tr>
+                                <tr>
+                                    <td>2. ..............................</td>
+                                    <td style="height:50px;"></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+
+                <div style="page-break-before: always;"></div>
+
+                <!-- INSTRUMEN ASESMEN -->
+                <div id="sec-asesmen" class="section-header-bar">IV. INSTRUMEN ASESMEN</div>
+                <p><strong>1. Asesmen Awal (Diagnostik Kognitif)</strong></p>
+                <table class="doc-table">
+                    <tr style="background:#f3f4f6;">
+                        <th style="width: 5%; text-align:center;">No</th>
+                        <th style="width: 45%;">Pertanyaan</th>
+                        <th style="width: 50%;">Rencana Tindak Lanjut</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">1</td>
+                        <td>Jelaskan pemahaman awal kalian mengenai konsep dasar ${topik}?</td>
+                        <td>Jika siswa belum mengerti, guru memberikan penguatan dan gambaran singkat sebelum materi inti.</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">2</td>
+                        <td>Pernahkah kalian melihat atau mengalami fenomena terkait ${topik} di kehidupan sehari-hari? Berikan contohnya!</td>
+                        <td>Digunakan untuk memetakan pengalaman siswa; jika sudah paham, diskusi dapat langsung diperdalam.</td>
+                    </tr>
+                </table>
+
+                <p><strong>2. Asesmen Proses (Observasi Kinerja & Diskusi)</strong></p>
+                <table class="doc-table">
+                    <tr style="background:#f3f4f6;">
+                        <th style="width: 5%; text-align:center;">No</th>
+                        <th style="width: 75%;">Indikator Penilaian (Formatif)</th>
+                        <th style="width: 10%; text-align:center;">Tercapai</th>
+                        <th style="width: 10%; text-align:center;">Belum</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">1</td>
+                        <td>Kualitas partisipasi aktif peserta didik dalam kegiatan diskusi dan kerja kelompok.</td>
+                        <td style="text-align:center;"></td>
+                        <td style="text-align:center;"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">2</td>
+                        <td>Kemampuan peserta didik dalam mengidentifikasi dan merumuskan masalah saat penyelidikan.</td>
+                        <td style="text-align:center;"></td>
+                        <td style="text-align:center;"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">3</td>
+                        <td>Ketepatan dan kelogisan dalam menganalisis data atau informasi yang ditemukan.</td>
+                        <td style="text-align:center;"></td>
+                        <td style="text-align:center;"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">4</td>
+                        <td>Kolaborasi antar anggota dan pembagian tugas yang merata dalam penyelesaian LKPD.</td>
+                        <td style="text-align:center;"></td>
+                        <td style="text-align:center;"></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;">5</td>
+                        <td>Keberanian, kejelasan, dan kelancaran dalam mempresentasikan hasil diskusi ke depan kelas.</td>
+                        <td style="text-align:center;"></td>
+                        <td style="text-align:center;"></td>
+                    </tr>
+                </table>
+
+                <p><strong>3. Asesmen Akhir (Sumatif)</strong></p>
+                <p style="font-size: 10pt; margin-bottom: 5px;"><strong>A. Soal Pilihan Ganda</strong> <em>(Pilihlah salah satu jawaban yang paling tepat!)</em></p>
+                <table class="doc-table" style="font-size: 10pt; margin-bottom: 10px;">
+                    <tr style="background:#f3f4f6;">
+                        <th style="width: 5%; text-align:center;">No</th>
+                        <th style="width: 45%;">Soal Evaluasi</th>
+                        <th style="width: 50%;">Pilihan Jawaban</th>
+                    </tr>
+                    ${Array.from({length: 10}).map((_, i) => `
+                    <tr>
+                        <td style="text-align:center; vertical-align: top;">${i+1}</td>
+                        <td style="vertical-align: top; padding: 8px;">Berdasarkan materi ${topik} yang telah dipelajari, manakah pernyataan berikut yang paling tepat mengenai konsep tersebut...</td>
+                        <td style="vertical-align: top; padding: 8px;">
+                            A. ..............................................................<br>
+                            B. ..............................................................<br>
+                            C. ..............................................................<br>
+                            D. ..............................................................
+                        </td>
+                    </tr>
+                    `).join('')}
+                </table>
+
+                <p style="font-size: 10pt; margin-bottom: 5px;"><strong>B. Soal Uraian (Esai)</strong></p>
+                <table class="doc-table" style="font-size: 10pt;">
+                    <tr style="background:#f3f4f6;">
+                        <th style="width: 5%; text-align:center;">No</th>
+                        <th style="width: 95%;">Pertanyaan Uraian / Analisis</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center; vertical-align: top;">1</td>
+                        <td style="vertical-align: top; padding-bottom: 30px;">Jelaskan secara rinci menggunakan pemahamanmu sendiri, apa yang dimaksud dengan ${topik}!</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center; vertical-align: top;">2</td>
+                        <td style="vertical-align: top; padding-bottom: 30px;">Sebutkan dan jelaskan dengan singkat 3 faktor utama yang mempengaruhi fenomena / proses dalam ${topik}!</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center; vertical-align: top;">3</td>
+                        <td style="vertical-align: top; padding-bottom: 30px;">Bagaimana penerapan atau dampak dari ${topik} dalam kehidupan sehari-hari? Berikan minimal 2 contoh konkrit.</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center; vertical-align: top;">4</td>
+                        <td style="vertical-align: top; padding-bottom: 30px;">Analisislah hubungan keterkaitan antara konsep ${topik} dengan kondisi lingkungan di sekitar kita!</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center; vertical-align: top;">5</td>
+                        <td style="vertical-align: top; padding-bottom: 30px;">Tuliskan kesimpulan akhir kalian mengenai seberapa penting kita mempelajari dan menguasai pemahaman tentang ${topik}!</td>
+                    </tr>
+                </table>
+
+                <div style="page-break-before: always;"></div>
+
+                <!-- BAHAN BACAAN & DAFTAR PUSTAKA (RAPID DALAM TABEL) -->
+                <div id="sec-bacaan" class="section-header-bar">V. BAHAN BACAAN & SUMBER BELAJAR</div>
+                
+                <table class="doc-table">
+                    <tr>
+                        <th style="background:#e5e7eb; text-align:center; font-size: 12pt; padding: 10px;">
+                            Materi Bacaan Inti: Konsep dan Eksplorasi ${topik}
+                        </th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 15px;">
+                            <p class="text-justify" style="margin-top:0;"><strong>Pengantar Topik Pembelajaran</strong><br>
+                            Pembelajaran mengenai <strong>${topik}</strong> dirancang untuk memberikan pengalaman belajar yang bermakna bagi peserta didik. Menguasai materi ini bukan hanya tentang menghafal teori, tetapi tentang memahami keterkaitan konsep-konsep tersebut dengan fenomena yang sering kita jumpai di kehidupan nyata sehari-hari.</p>
+                            
+                            <p class="text-justify"><strong>Eksplorasi Konsep</strong><br>
+                            Setiap fenomena di alam atau konsep keilmuan yang kita kaji selalu terikat pada hukum sebab-akibat. Proses pembelajaran secara mendalam (Deep Learning) menuntut kita untuk selalu mempertanyakan "mengapa" dan "bagaimana" suatu sistem bekerja. Dengan melakukan penyelidikan yang terstruktur, peserta didik dilatih untuk membangun konstruksi pengetahuannya sendiri secara mandiri namun tetap berada di jalur pembimbingan pedagogis yang tepat.</p>
+
+                            <div class="highlight-box" style="background-color: #f1fbe9; border: 1px solid #a3e635; padding: 10px; margin-top: 15px; margin-bottom: 0;">
+                                <strong>💡 Intisari Penting:</strong><br>
+                                Kemampuan untuk mengaitkan materi akademik dengan penyelesaian masalah sehari-hari adalah kompetensi tertinggi dari pembelajaran yang bermakna. Siswa didorong untuk terus kritis dan mengkomunikasikan hasil temuan mereka.
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <!-- GLOSARIUM & PUSTAKA DALAM TABEL -->
+                <table class="doc-table">
+                    <tr>
+                        <th colspan="2" style="background:#e5e7eb; text-align:left; font-size: 11pt;">GLOSARIUM (Daftar Istilah Terkait ${topik})</th>
+                    </tr>
+                    <tr>
+                        <td style="width: 25%; font-weight:bold;">${topik}</td>
+                        <td>Konsep inti atau fenomena utama yang menjadi fokus pembahasan dalam modul pembelajaran ini.</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Analisis Kontekstual</td>
+                        <td>Kemampuan menghubungkan teori yang dipelajari tentang ${topik} dengan situasi dunia nyata di lingkungan sekitar.</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Fenomena Observasi</td>
+                        <td>Rangkaian peristiwa atau kejadian terkait ${topik} yang dapat diamati secara langsung dan dikaji secara keilmuan.</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Penyelidikan / Eksplorasi</td>
+                        <td>Proses observasi dan percobaan sistematis untuk menemukan fakta-fakta mendasar dari masalah yang terkait dengan ${topik}.</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Hipotesis Dasar</td>
+                        <td>Dugaan, argumen, atau kesimpulan sementara yang dibuat siswa sebelum melakukan eksplorasi mendalam terhadap materi.</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight:bold;">Evaluasi Kognitif</td>
+                        <td>Penilaian terhadap tingkat penguasaan konsep siswa terhadap materi ${topik} yang telah diajarkan secara terstruktur.</td>
+                    </tr>
+                    
+                    <tr>
+                        <th colspan="2" style="background:#e5e7eb; text-align:left; font-size: 11pt; padding-top:10px;">DAFTAR PUSTAKA</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="font-size: 10pt; padding: 10px;">
+                            <ul style="margin:0; padding-left:20px;">
+                                <li>Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi Republik Indonesia. <em>Buku Panduan Guru dan Siswa ${mapel} Fase ${fase}</em>. Jakarta.</li>
+                                <li>Literatur pendukung relevan terkait materi <strong>${topik}</strong> (Buku teks, Artikel Ilmiah, Ensiklopedia Digital).</li>
+                                <li>Modul Pengembangan Kurikulum Merdeka dan Model Pendekatan Deep Learning.</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+
+                <div style="page-break-before: always;"></div>
+
+                <!-- REFLEKSI & TINDAK LANJUT (RAPID DALAM TABEL) -->
+                <div id="sec-tindaklanjut" class="section-header-bar">VI. REFLEKSI & TINDAK LANJUT</div>
+                
+                <table class="doc-table">
+                    <tr>
+                        <th style="width: 50%; background:#e5e7eb; text-align:center;">A. Refleksi Pendidik (Berkesadaran)</th>
+                        <th style="width: 50%; background:#e5e7eb; text-align:center;">B. Refleksi Peserta Didik (Menggembirakan)</th>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top; padding: 15px;">
+                            <ul style="margin-top:0; padding-left:20px; text-align: justify;">
+                                <li>Apakah seluruh proses pembelajaran dari awal hingga akhir berjalan sesuai dengan alur waktu yang direncanakan?</li>
+                                <li>Sejauh mana efektivitas model <strong>${formatBullet(model)}</strong> dalam menarik minat dan antusiasme belajar siswa?</li>
+                                <li>Apakah indikator ketercapaian tujuan pembelajaran sudah bisa teramati secara terukur melalui asesmen?</li>
+                                <li>Pendekatan atau perbaikan apa yang harus saya siapkan untuk sesi pertemuan kelas berikutnya?</li>
+                            </ul>
+                        </td>
+                        <td style="vertical-align: top; padding: 15px;">
+                            <ul style="margin-top:0; padding-left:20px; text-align: justify;">
+                                <li>Bagian kegiatan kelas mana yang hari ini terasa paling menyenangkan dan memotivasi bagiku?</li>
+                                <li>Adakah konsep tentang materi <strong>${topik}</strong> yang masih membuatku merasa kebingungan?</li>
+                                <li>Apakah aku merasa percaya diri untuk menjelaskan ulang pengetahuan baru ini kepada teman sebayaku?</li>
+                                <li>Manfaat apa yang bisa langsung aku terapkan dari pembelajaran kita hari ini?</li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="section-header-bar" style="margin-top: 20px; margin-bottom: 5px; font-size: 11pt; background-color: #f3f4f6;">PROGRAM TINDAK LANJUT</div>
+                <table class="doc-table">
+                    <tr style="background:#e5e7eb;">
+                        <th style="width: 50%; text-align:center;">Program Remedial</th>
+                        <th style="width: 50%; text-align:center;">Program Pengayaan</th>
+                    </tr>
+                    <tr>
+                        <td style="padding: 15px; text-align: justify;">
+                            Difokuskan bagi peserta didik yang pemahamannya masih berada pada kriteria <em>'Mulai Berkembang'</em> atau <em>'Perlu Bimbingan'</em>. Tindakan: Diberikan sesi pendampingan personal atau aktivitas kelompok kecil dengan panduan langkah-demi-langkah (scaffolding) yang lebih mendetail terkait inti materi dasar.
+                        </td>
+                        <td style="padding: 15px; text-align: justify;">
+                            Ditujukan bagi peserta didik yang telah mencapai kriteria <em>'Sangat Mahir'</em> atau di atas target minimal. Tindakan: Diberikan penugasan mandiri seperti menganalisis studi kasus lanjutan, menyusun proyek mini, atau ditunjuk sebagai tutor sebaya untuk membantu membimbing teman di kelompoknya.
+                        </td>
+                    </tr>
+                </table>
+            `;
+
+            document.getElementById('print-area').innerHTML = html;
+            document.getElementById('actionBar').classList.remove('opacity-50', 'pointer-events-none');
+            document.getElementById('actionBar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Copy / Export System
+        function copyToClipboardAndOpenDocs() {
+            const printArea = document.getElementById('print-area');
+            const range = document.createRange();
+            range.selectNode(printArea);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            
+            try {
+                const successful = document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+                if(successful) {
+                    alert("Konten Modul Ajar telah disalin ke clipboard dengan struktur tabel rapi! Google Docs akan terbuka secara otomatis di tab baru. Silakan lakukan 'Paste' (CTRL+V) di sana.");
+                    window.open('https://docs.new', '_blank');
+                } else {
+                    alert("Sistem clipboard mengalami kendala. Silakan pilih semua teks di pratinjau kanan lalu lakukan salin manual.");
+                }
+            } catch (err) {
+                alert("Tidak dapat menyalin secara otomatis. Silakan salin teks di dokumen pratinjau secara manual.");
+            }
+        }
+
+        function exportToWord() {
+            const printArea = document.getElementById('print-area');
+            const preHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head><meta charset='utf-8'><title>Perangkat Ajar Deep Learning</title>
+            <style>
+                body { font-family: 'Times New Roman', Times, serif; font-size: 11pt; line-height: 1.5; color: #000; }
+                table { width: 100%; border-collapse: collapse; margin-bottom: 12pt; font-size: 11pt; }
+                table, th, td { border: 1px solid #111; padding: 6px 8px; }
+                th { background-color: #f3f4f6; font-weight: bold; }
+                .doc-title { text-align: center; font-size: 16pt; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; }
+                .doc-subtitle { text-align: center; font-size: 12pt; font-style: italic; margin-bottom: 18pt; border-bottom: 2px solid #000; padding-bottom: 8px;}
+                .section-header-bar { font-weight: bold; font-size: 12pt; background-color: #e5e7eb; padding: 6px 10px; margin-top: 18pt; margin-bottom: 6pt; border: 1px solid #000; text-transform: uppercase; }
+                .highlight-box { background-color: #f1fbe9; border: 1px solid #a3e635; padding: 10px; margin-bottom: 10px; }
+                .text-justify { text-align: justify; }
+                ul, ol { margin-top: 0; margin-bottom: 6px; padding-left: 20px; }
+            </style>
+            </head><body>`;
+            
+            const postHtml = "</body></html>";
+            const htmlContent = preHtml + printArea.innerHTML + postHtml;
+
+            const blob = new Blob(['\ufeff', htmlContent], {
+                type: 'application/msword'
+            });
+            
+            const url = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(htmlContent);
+            const filename = 'Modul_Ajar_Generator_Krisna_Antara.doc';
+            
+            const downloadLink = document.createElement("a");
+            document.body.appendChild(downloadLink);
+            
+            if (navigator.msSaveOrOpenBlob) {
+                navigator.msSaveOrOpenBlob(blob, filename);
+            } else {
+                downloadLink.href = url;
+                downloadLink.download = filename;
+                downloadLink.click();
+            }
+            document.body.removeChild(downloadLink);
+        }
+    </script>
+</body>
+</html>
